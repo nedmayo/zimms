@@ -9,6 +9,22 @@
 </head>
 
 <body>
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="mobile-menu">
+        <button class="mobile-menu-item" data-tab="home">Zimmerman's Dry Goods</button>
+        <button class="mobile-menu-item" data-tab="history">About Us</button>
+        <button class="mobile-menu-item" data-tab="our-work">Our Work</button>
+        <button class="mobile-menu-item" data-tab="faq">FAQ</button>
+        <button class="mobile-menu-item" data-tab="contact">Contact/Order</button>
+        <div class="mobile-menu-info">
+            <p>1656 Grand Ave, St Paul, MN 55105</p>
+            <p>zimmdrygoods@gmail.com</p>
+            <p>(651) 699-4273</p>
+            <p>Mon-Sat: 10am-5pm | Sun: Closed</p>
+            <a href="https://www.instagram.com/zimmprinting/" target="_blank">Instagram</a>
+        </div>
+    </div>
+
     <div class="excel-grid">
         <svg class="grid-overlay" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -22,18 +38,24 @@
             </defs>
         </svg>
         <!-- Row 1: Narrow header -->
-        <div class="cell cell-empty"></div>
+        <div class="cell hamburger-cell">
+            <button class="hamburger-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
         <div class="cell tab-cell" data-tab="home">
-            <button class="tab-button brand-button active" data-bg-color="#1a4d2e">Zimmerman's Dry Goods</button>
+            <button class="tab-button brand-button active">Zimmerman's Dry Goods</button>
         </div>
         <div class="cell tab-cell" data-tab="history">
-            <button class="tab-button" data-bg-color="#ffa200">About Us</button>
+            <button class="tab-button">About Us</button>
         </div>
         <div class="cell tab-cell" data-tab="our-work">
-            <button class="tab-button" data-bg-color="#cc3b00">Our Work</button>
+            <button class="tab-button">Our Work</button>
         </div>
         <div class="cell tab-cell" data-tab="faq">
-            <button class="tab-button" data-bg-color="#3c4c9d">FAQ</button>
+            <button class="tab-button">FAQ</button>
         </div>
 
         <!-- Row 2: Very big -->
@@ -80,7 +102,6 @@
 
             <div class="tab-content" id="faq">
                 <div class="mission-text">
-                    <p><strong>Frequently Asked Questions</strong></p>
                     <p><strong>What is your turnaround time?</strong><br>
                         Turnaround time varies depending on the project size and complexity. Contact us for a specific
                         timeline for your order.</p>
@@ -96,13 +117,13 @@
         </div>
         <div class="cell cell-no-right-border">
             <div class="hours-text">
-                <p>Monday: 10am-5pm</p>
+                <p>Sunday: Closed</p>
+                <p>Monday: Closed </p>
                 <p>Tuesday: 10am-5pm</p>
                 <p>Wednesday: 10am-5pm</p>
                 <p>Thursday: 10am-5pm</p>
                 <p>Friday: 10am-5pm</p>
                 <p>Saturday: 10am-5pm</p>
-                <p>Sunday: Closed</p>
             </div>
         </div>
 
@@ -126,7 +147,7 @@
             <div class="phone-text">(651) 699-4273</div>
         </div>
         <div class="cell tab-cell cell-no-right-border" data-tab="contact">
-            <button class="tab-button" data-bg-color="#81ad65">Contact/Order</button>
+            <button class="tab-button">Contact/Order</button>
         </div>
     </div>
 

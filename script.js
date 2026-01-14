@@ -1,52 +1,84 @@
-// Add subtle interactions
 document.addEventListener("DOMContentLoaded", function () {
-  // Add hover effect to navigation links
-  const navLinks = document.querySelectorAll(".nav-link, .footer-link");
-  navLinks.forEach((link) => {
-    link.addEventListener("mouseenter", function () {
-      this.style.transform = "translateY(-2px)";
-    });
-    link.addEventListener("mouseleave", function () {
-      this.style.transform = "translateY(0)";
-    });
-  });
-
-  // Tab functionality
   const tabButtons = document.querySelectorAll(".tab-button");
   const tabContents = document.querySelectorAll(".tab-content");
+  const hamburgerBtn = document.querySelector(".hamburger-btn");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const mobileMenuItems = document.querySelectorAll(".mobile-menu-item");
 
-  // Set initial background color to green (matching Zimmerman's default)
-  document.body.style.backgroundColor = "#1a4d2e";
+  // Background colors for each tab
+  const tabColors = {
+    home: "#000000",
+    history: "#841717",
+    "our-work": "#F8A91F",
+    faq: "#5475e7",
+    contact: "#8c8418",
+  };
+
+  function setBackgroundColor(tabId) {
+    document.body.style.backgroundColor = tabColors[tabId] || "#000000";
+  }
 
   tabButtons.forEach((button) => {
     button.addEventListener("click", function () {
       const tabId = this.closest(".tab-cell").dataset.tab;
-      const bgColor = this.dataset.bgColor;
 
-      // Remove active class from all buttons and contents
       tabButtons.forEach((btn) => btn.classList.remove("active"));
       tabContents.forEach((content) => content.classList.remove("active"));
 
-      // Only show content if "About Us" (history) is clicked
-      if (tabId === "history") {
-        this.classList.add("active");
-        const targetContent = document.getElementById(tabId);
-        if (targetContent) {
-          targetContent.classList.add("active");
-        }
-      } else {
-        // For other buttons, just activate the button but don't show content
-        this.classList.add("active");
+      this.classList.add("active");
+
+      const targetContent = document.getElementById(tabId);
+      if (targetContent) {
+        targetContent.classList.add("active");
       }
 
-      // Change background color
-      if (bgColor) {
-        document.body.style.backgroundColor = bgColor;
-      }
+      setBackgroundColor(tabId);
     });
   });
 
-  // Draw grid lines with SVG
+  // Hamburger menu toggle
+  if (hamburgerBtn && mobileMenu) {
+    hamburgerBtn.addEventListener("click", function () {
+      this.classList.toggle("active");
+      mobileMenu.classList.toggle("active");
+    });
+  }
+
+  // Mobile menu items
+  mobileMenuItems.forEach((item) => {
+    item.addEventListener("click", function () {
+      const tabId = this.dataset.tab;
+
+      // Remove active from all mobile items
+      mobileMenuItems.forEach((i) => i.classList.remove("active"));
+      this.classList.add("active");
+
+      // Sync with desktop tabs
+      tabButtons.forEach((btn) => btn.classList.remove("active"));
+      tabContents.forEach((content) => content.classList.remove("active"));
+
+      // Find matching desktop button and activate
+      const matchingDesktopBtn = document.querySelector(
+        `.tab-cell[data-tab="${tabId}"] .tab-button`
+      );
+      if (matchingDesktopBtn) {
+        matchingDesktopBtn.classList.add("active");
+      }
+
+      // Show content if applicable
+      const targetContent = document.getElementById(tabId);
+      if (targetContent) {
+        targetContent.classList.add("active");
+      }
+
+      setBackgroundColor(tabId);
+
+      // Close menu
+      hamburgerBtn.classList.remove("active");
+      mobileMenu.classList.remove("active");
+    });
+  });
+
   function drawGridLines() {
     const grid = document.querySelector(".excel-grid");
     const svg = document.querySelector(".grid-overlay");
@@ -54,7 +86,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!grid || !svg || cells.length === 0) return;
 
-    // Clear existing lines
     svg.innerHTML =
       "<defs><style>.grid-line { stroke: white; stroke-width: 3; vector-effect: non-scaling-stroke; }</style></defs>";
 
@@ -62,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const gridTop = gridRect.top;
     const gridLeft = gridRect.left;
 
-    // Get all cell positions relative to grid
     const cellPositions = Array.from(cells).map((cell) => {
       const rect = cell.getBoundingClientRect();
       return {
@@ -76,7 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
       };
     });
 
-    // Find merged cells to know where to break lines
     const mergedCells = cellPositions.filter((pos) => {
       return (
         pos.element.classList.contains("cell-merged-2") ||
@@ -84,7 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
       );
     });
 
-    // Helper function to check if a vertical line would bisect a merged cell and get its bounds
     function getMergedCellAtX(x, mergedCells) {
       for (const merged of mergedCells) {
         const tolerance = 1;
@@ -95,10 +123,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return null;
     }
 
-    // Draw vertical lines (between columns)
     const verticalPositions = new Set();
     cellPositions.forEach((pos) => {
-      // Draw line at right edge of each cell (except cells that shouldn't have right border or are at the right edge of grid)
       const isAtRightEdge = Math.abs(pos.right - gridRect.width) < 1;
       if (
         !pos.element.classList.contains("cell-no-right-border") &&
@@ -112,8 +138,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const mergedCell = getMergedCellAtX(x, mergedCells);
 
       if (mergedCell) {
-        // Draw two segments: above and below the merged cell
-        // Top segment
         if (mergedCell.top > 0) {
           const topLine = document.createElementNS(
             "http://www.w3.org/2000/svg",
@@ -126,7 +150,6 @@ document.addEventListener("DOMContentLoaded", function () {
           topLine.setAttribute("y2", Math.round(mergedCell.top));
           svg.appendChild(topLine);
         }
-        // Bottom segment
         if (mergedCell.bottom < gridRect.height) {
           const bottomLine = document.createElementNS(
             "http://www.w3.org/2000/svg",
@@ -140,7 +163,6 @@ document.addEventListener("DOMContentLoaded", function () {
           svg.appendChild(bottomLine);
         }
       } else {
-        // Draw full height line
         const line = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "line"
@@ -154,10 +176,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Draw horizontal lines (between rows)
     const horizontalPositions = new Set();
     cellPositions.forEach((pos) => {
-      // Draw line at bottom edge of each cell (except last row)
       if (pos.bottom < gridRect.height - 1) {
         horizontalPositions.add(Math.round(pos.bottom));
       }
@@ -177,10 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // Draw grid lines on load and resize
   drawGridLines();
   window.addEventListener("resize", drawGridLines);
-
-  // Redraw after a short delay to ensure layout is complete
   setTimeout(drawGridLines, 100);
 });
