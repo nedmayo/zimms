@@ -108,6 +108,77 @@ body {
   opacity: 0.8;
 }
 
+/* Order form */
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 28rem;
+  margin-bottom: 1.5rem;
+}
+
+.order-form label {
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.order-form input,
+.order-form textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: white;
+  border-radius: 0;
+}
+
+.order-form input::placeholder,
+.order-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.order-form input:focus,
+.order-form textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.order-form-submit {
+  align-self: flex-start;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.65rem 1.5rem;
+  background: white;
+  color: #5475e7;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.order-form-submit:hover {
+  opacity: 0.9;
+}
+
+.order-form-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-feedback {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.form-feedback.success {
+  color: #90ee90;
+}
+
+.form-feedback.error {
+  color: #ffb3b3;
+}
+
 .hours-text {
   font-size: 1.3rem;
   font-weight: 300;

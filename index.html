@@ -80,10 +80,19 @@
 
             <div class="tab-content" id="contact">
                 <div class="mission-text">
-                    <p>Contact us to place an order or ask questions about our services.</p>
-                    <p>Email: zimmdrygoods@gmail.com</p>
-                    <p><a href="https://www.instagram.com/zimmprinting/" target="_blank"
-                            class="instagram-link">Instagram</a></p>
+                    <p>Place an order or ask a question. We'll get back to you soon.</p>
+                    <form class="order-form" id="order-form" action="/api/submit" method="post">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone">
+                        <label for="order-message">Order details / Message</label>
+                        <textarea id="order-message" name="message" rows="5" required></textarea>
+                        <button type="submit" class="order-form-submit">Send</button>
+                    </form>
+                    <p id="form-feedback" class="form-feedback" aria-live="polite"></p>
                 </div>
             </div>
 
