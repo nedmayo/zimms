@@ -57,10 +57,10 @@ Go to [dash.cloudflare.com](https://dash.cloudflare.com) and sign in (or create 
 - **Production branch** — `main` (or whatever branch you use).
 - **Build settings:**
   - **Framework preset:** `None` (this is a static site, no Node/React build).
-  - **Build command:** leave empty (or delete any default).
-  - **Build output directory:** `./` (the repo root is the output; `index.html` is at the root).
+  - **Build command:** leave **empty** — do not use `npx wrangler deploy` (that’s for Workers and will fail here).
+  - **Build output directory:** `./` (the repo root; `index.html` is at the root).
 
-Click **Save and Deploy**. The first deploy may take a minute. Your site will be at `https://YOUR_PROJECT.pages.dev`.
+Click **Save and Deploy**. Cloudflare will deploy the repo (and `functions/`) automatically; you don’t run Wrangler in the build. The first deploy may take a minute. Your site will be at `https://YOUR_PROJECT.pages.dev`.
 
 ### 5. Add environment variables (for the form email)
 
@@ -90,7 +90,7 @@ Open `https://YOUR_PROJECT.pages.dev`, go to **Contact/Order**, fill out and sub
   git push
   ```
 
-- **Deploy from the command line (no push):** Use the Cloudflare CLI from the project root. The project must already exist (e.g. you created it via "Connect to Git" in the dashboard).
+- **Deploy from the command line (no push):** Use the Cloudflare CLI from the project root. The project must already exist (e.g. you created it via "Connect to Git" in the dashboard). Use **`wrangler pages deploy`** (not `wrangler deploy` — that’s for Workers).
 
   ```bash
   npx wrangler pages deploy . --project-name=YOUR_PROJECT_NAME
