@@ -200,43 +200,4 @@ document.addEventListener("DOMContentLoaded", function () {
   drawGridLines();
   window.addEventListener("resize", drawGridLines);
   setTimeout(drawGridLines, 100);
-
-  // Order form: submit via fetch so we get JSON and can show feedback
-  const orderForm = document.getElementById("order-form");
-  const formFeedback = document.getElementById("form-feedback");
-  if (orderForm && formFeedback) {
-    orderForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const submitBtn = orderForm.querySelector(".order-form-submit");
-      submitBtn.disabled = true;
-      formFeedback.textContent = "";
-      formFeedback.className = "form-feedback";
-
-      const formData = new FormData(orderForm);
-      try {
-        const res = await fetch("/api/submit", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await res.json().catch(() => ({}));
-
-        if (res.ok) {
-          formFeedback.textContent = "Thanks — we'll be in touch soon.";
-          formFeedback.className = "form-feedback success";
-          orderForm.reset();
-        } else {
-          formFeedback.textContent =
-            data.message ||
-            "Something went wrong. Please try again or email us.";
-          formFeedback.className = "form-feedback error";
-        }
-      } catch (_) {
-        formFeedback.textContent =
-          "Network error. Please check your connection or email us directly.";
-        formFeedback.className = "form-feedback error";
-      } finally {
-        submitBtn.disabled = false;
-      }
-    });
-  }
 });

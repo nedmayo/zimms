@@ -20,104 +20,72 @@ A modern, artistic website redesign for Zimmerman's Dry Goods featuring a dark g
 
 Simply open `index.html` in a web browser to view the site.
 
-## Order form & Cloudflare setup (step-by-step)
+## Deploy to Cloudflare Pages (static)
 
-The form **only works after the site is deployed to Cloudflare Pages** — it posts to `/api/submit`, which is provided by a Cloudflare Pages Function. Locally or on GitHub Pages there is no such endpoint, so submissions will fail until you complete the steps below.
+The site is fully static (HTML, CSS, JS only). No serverless functions or environment variables.
 
-You only need **Cloudflare Pages** (no separate Workers project). Pages hosts your static site and runs the `functions/` code automatically.
+---
 
-### 1. Push your code to GitHub
+## Start fresh: put this site on a domain you own
 
-If the project isn’t already in a GitHub repo, create one and push:
+Use this if you want to start clean on Cloudflare and serve the site on your own domain (e.g. `zimmprinting.com` or `www.zimmprinting.com`).
 
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-git push -u origin main
-```
+### Step 1 — Get the code on GitHub
 
-### 2. Sign in to Cloudflare
+If it isn’t already:
 
-Go to [dash.cloudflare.com](https://dash.cloudflare.com) and sign in (or create a free account).
+- Create a new repo on GitHub, push this project, and use a `main` branch.
 
-### 3. Create a Pages project from Git
+### Step 2 — Create a Cloudflare account (if needed)
 
-1. In the left sidebar, open **Workers & Pages**.
-2. Click **Create application** → **Pages** → **Connect to Git**.
-3. Click **Connect with GitHub** and authorize Cloudflare to see your repos.
-4. Choose the **repository** for this project (e.g. `zimms` or whatever you named it).
-5. Click **Begin setup**.
+- Go to [dash.cloudflare.com](https://dash.cloudflare.com) and sign up or log in.
 
-### 4. Configure the build (static site, no framework)
+### Step 3 — Create a new Pages project
 
-- **Project name** — e.g. `zimms` or `zimmermans-dry-goods`.
-- **Production branch** — `main` (or whatever branch you use).
-- **Build settings:**
-  - **Framework preset:** `None` (this is a static site, no Node/React build).
-  - **Build command:** leave **empty** — do not use `npx wrangler deploy` (that’s for Workers and will fail here).
-  - **Build output directory:** `./` (the repo root; `index.html` is at the root).
+1. In the sidebar: **Workers & Pages** → **Create** → **Pages** → **Connect to Git**.
+2. Connect **GitHub** and choose the repo for this site.
+3. On **Set up build and deploy**:
+   - **Project name:** whatever you like (e.g. `zimms`).
+   - **Production branch:** `main`.
+   - **Framework preset:** None.
+   - **Build command:** leave **empty**.
+   - **Build output directory:** `./`
+   - If you see **Deploy command** (or similar), leave it **empty**.
+4. Click **Save and Deploy**. Wait for the first deploy to finish. The site will be live at `https://YOUR_PROJECT.pages.dev`.
 
-Click **Save and Deploy**. Cloudflare will deploy the repo (and `functions/`) automatically; you don’t run Wrangler in the build. The first deploy may take a minute. Your site will be at `https://YOUR_PROJECT.pages.dev`.
+### Step 4 — Add your domain in Pages
 
-### 5. Add environment variables (for the form email)
+1. Open your **Pages** project in the dashboard.
+2. Go to **Custom domains** → **Set up a custom domain**.
+3. Enter the domain you want for this site, e.g.:
+   - **Apex:** `yourdomain.com` (sometimes requires extra DNS setup), or  
+   - **Subdomain:** `www.yourdomain.com` (simplest).
+4. Click **Continue**. Cloudflare will show you what DNS record is needed (usually a **CNAME** and a target like `your-project.pages.dev`). Keep that tab open or copy the target.
 
-1. In the Pages project, go to **Settings** → **Environment variables**.
-2. Under **Production** (and **Preview** if you want form submissions on preview URLs), add:
+### Step 5 — Point your domain at Cloudflare
 
-   | Variable     | Value                    | Encrypt (optional) |
-   | ------------ | ------------------------ | ------------------ |
-   | `TO_EMAIL`   | `zimmdrygoods@gmail.com` | No                 |
-   | `FROM_EMAIL` | `onboarding@resend.dev`  | No                 |
+Where you do this depends on **where your domain’s DNS is** (who hosts the nameservers).
 
-   (The Resend API key is currently hardcoded in `functions/api/submit.js`; you can move it to a `RESEND_API_KEY` env var later for security.)
+**Option A — Your domain is already on Cloudflare**
 
-3. Click **Save**. Redeploy once so the new variables apply: **Deployments** → **…** on the latest deployment → **Retry deployment** (or push a small commit).
+- In Cloudflare: **Websites** → your domain → **DNS** → **Records**.
+- Add the record Cloudflare Pages told you (e.g. CNAME `www` → `your-project.pages.dev`), or update the existing one.
+- Save. Pages will verify the domain; SSL is automatic.
 
-### 6. Test the form
+**Option B — Your domain is somewhere else (e.g. Bluehost, Namecheap, GoDaddy)**
 
-Open `https://YOUR_PROJECT.pages.dev`, go to **Contact/Order**, fill out and submit the form. You should see a success message and receive an email at `zimmdrygoods@gmail.com` with Reply-To set to the submitter’s email.
+- Log in at **that** provider and open **DNS** or **Domain management**.
+- Add a **CNAME** record:
+  - **Name / Host:** the part before your domain (e.g. `www` for `www.yourdomain.com`, or `@` / blank for apex if the provider supports it).
+  - **Value / Points to:** the target Cloudflare gave you (e.g. `your-project.pages.dev`).
+- Save. Back in Cloudflare Pages, finish **Set up custom domain** if it’s waiting for verification. DNS can take a few minutes to an hour.
 
-### Deploy commands
+### Step 6 — You’re done
 
-- **If the project is connected to Git (recommended):** Pushing to the production branch deploys automatically.
+- Once DNS has propagated, `https://yourdomain.com` (or `https://www.yourdomain.com`) will serve this site.
+- Future updates: push to the `main` branch; Cloudflare will redeploy automatically.
 
-  ```bash
-  git add .
-  git commit -m "Your message"
-  git push
-  ```
-
-- **Deploy from the command line (no push):** Use the Cloudflare CLI from the project root. The project must already exist (e.g. you created it via "Connect to Git" in the dashboard). Use **`wrangler pages deploy`** (not `wrangler deploy` — that’s for Workers).
-
-  ```bash
-  npx wrangler pages deploy . --project-name=YOUR_PROJECT_NAME
-  ```
-
-  First time: run `npx wrangler login` and sign in in the browser. Replace `YOUR_PROJECT_NAME` with the project name you gave in Cloudflare (e.g. `zimms`). This uploads the current directory (including `functions/`) to Pages.
-
-### Using new.zimmprinting.com (staging URL while main site is on Bluehost)
-
-You can serve this new site at **new.zimmprinting.com** and keep **zimmprinting.com** on Bluehost until you’re ready to switch over.
-
-1. **In Cloudflare Pages**  
-   In your Pages project: **Custom domains** → **Set up a custom domain**.  
-   Enter **`new.zimmprinting.com`** and continue.  
-   Cloudflare will show you a **CNAME** target (e.g. `your-project.pages.dev`). Copy it.
-
-2. **In Bluehost (where zimmprinting.com DNS lives)**  
-   Open DNS / Domain settings for **zimmprinting.com** and add a **CNAME** record:
-   - **Name / Host:** `new` (so the full hostname is `new.zimmprinting.com`)
-   - **Points to / Value:** the CNAME target from Cloudflare (e.g. `your-project.pages.dev`)
-   - **TTL:** default is fine (e.g. 14400 or 1 hour)
-
-   Save. Leave all other records (A, CNAME for www, etc.) unchanged so the main site stays on Bluehost.
-
-3. **Back in Cloudflare Pages**  
-   Finish the custom domain setup (e.g. confirm/verify). SSL is automatic.  
-   After DNS propagates (a few minutes to an hour), **https://new.zimmprinting.com** will serve this Pages site; **zimmprinting.com** and **www.zimmprinting.com** keep pointing to Bluehost until you change them later.
+**If you want both `yourdomain.com` and `www.yourdomain.com`:** Add both in **Custom domains** in the Pages project and set up the matching DNS records (often: CNAME `www` → Pages; apex can use CNAME flattening or a redirect from apex to `www`, depending on your DNS provider).
 
 ## Customization
 
