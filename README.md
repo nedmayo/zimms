@@ -53,12 +53,17 @@ If it isn’t already:
    - If you see **Deploy command** (or similar), leave it **empty**.
 4. Click **Save and Deploy**. Wait for the first deploy to finish. The site will be live at `https://YOUR_PROJECT.pages.dev`.
 
+**If the dashboard requires a deploy command** and the build fails with an error about "assets" or "entry-point", set **Deploy command** to:
+`npx wrangler pages deploy . --project-name=YOUR_PROJECT_NAME` (use your real project name). Use **`wrangler pages deploy`**, not `wrangler deploy`.
+
+**If the build fails with "Authentication error [code: 10000]"** when using a deploy command, the API token used by the build doesn’t have Pages permission. Either leave the deploy command **empty** so Cloudflare deploys from Git without a token, or add a token that has **Cloudflare Pages → Edit**: create it at [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens), then in the Pages project go to **Settings → Environment variables** and add `CLOUDFLARE_API_TOKEN` with that token’s value (for Production and Preview).
+
 ### Step 4 — Add your domain in Pages
 
 1. Open your **Pages** project in the dashboard.
 2. Go to **Custom domains** → **Set up a custom domain**.
 3. Enter the domain you want for this site, e.g.:
-   - **Apex:** `yourdomain.com` (sometimes requires extra DNS setup), or  
+   - **Apex:** `yourdomain.com` (sometimes requires extra DNS setup), or
    - **Subdomain:** `www.yourdomain.com` (simplest).
 4. Click **Continue**. Cloudflare will show you what DNS record is needed (usually a **CNAME** and a target like `your-project.pages.dev`). Keep that tab open or copy the target.
 
