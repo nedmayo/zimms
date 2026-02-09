@@ -48,7 +48,7 @@ If it isn’t already:
    - **Project name:** whatever you like (e.g. `zimms`).
    - **Production branch:** `main`.
    - **Framework preset:** None.
-   - **Build command:** leave **empty**.
+   - **Build command:** leave **empty**, or if the field is required use `true` (does nothing, exits successfully).
    - **Build output directory:** `./`
    - If you see **Deploy command** (or similar), leave it **empty**.
 4. Click **Save and Deploy**. Wait for the first deploy to finish. The site will be live at `https://YOUR_PROJECT.pages.dev`.

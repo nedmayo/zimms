@@ -29,7 +29,7 @@ body {
 
 .excel-grid {
   display: grid;
-  grid-template-columns: 80px 1fr 0.7fr 0.7fr 0.7fr;
+  grid-template-columns: 60px 1fr 0.7fr 0.7fr 0.7fr;
   grid-template-rows: 60px 1fr 60px;
   min-height: 100vh;
   position: relative;
@@ -75,6 +75,8 @@ body {
   align-items: flex-start;
   justify-content: flex-start;
   padding: 2rem;
+  min-height: 0;
+  overflow: auto;
 }
 
 .brand-button {
@@ -108,6 +110,22 @@ body {
   opacity: 0.8;
 }
 
+.tab-content-history {
+  overflow: hidden;
+}
+
+.about-us-polaroids {
+  float: left;
+  max-width: 350px;
+  margin: 0 1.5rem 0.25rem 0;
+  display: block;
+  vertical-align: top;
+}
+
+.cell-hours {
+  align-items: flex-start;
+}
+
 .hours-text {
   font-size: 1.3rem;
   font-weight: 300;
@@ -131,6 +149,10 @@ body {
   font-weight: 300;
   color: white;
   text-align: left;
+}
+
+.cell:has(.instagram-link-cell) {
+  justify-content: center;
 }
 
 .instagram-link-cell {
@@ -188,17 +210,24 @@ body {
 
 #home.tab-content.active {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: flex-start;
   min-height: 100%;
 }
 
 .home-tagline {
-  font-size: clamp(2.5rem, 6vw, 5rem);
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(4rem, 12vw, 10rem);
   font-weight: 600;
   color: white;
   margin: 0;
-  text-align: center;
+  text-align: left;
+}
+
+.home-tagline-line {
+  display: block;
+  line-height: 0.9;
 }
 
 .hamburger-btn {
@@ -206,26 +235,25 @@ body {
 }
 
 .mobile-menu {
-  position: fixed;
-  top: 60px;
-  left: 60px;
-  right: 0;
-  bottom: 0;
-  background-color: #000000;
   display: none;
   flex-direction: column;
-  padding: 2rem;
-  z-index: 1000;
-}
-
-.mobile-menu.active {
-  display: flex;
+  padding: 1.5rem 0 0;
+  width: 100%;
 }
 
 @media (max-width: 768px) {
   .excel-grid {
     grid-template-columns: 60px 1fr;
-    grid-template-rows: 60px 1fr;
+    grid-template-rows: 60px 1fr repeat(5, auto);
+  }
+
+  /* When mobile menu is open, show menu in content cell and hide tab content */
+  .cell-content.mobile-menu-open .tab-content {
+    display: none !important;
+  }
+
+  .mobile-menu.active {
+    display: flex;
   }
 
   /* Hide desktop-only cells */
@@ -242,7 +270,14 @@ body {
     display: none;
   }
 
-  /* Row 1: hamburger + brand */
+  /* Row 1: hamburger + brand – match page background, avoid border issues */
+  .hamburger-cell,
+  .cell.tab-cell[data-tab="home"] {
+    background-color: inherit;
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .hamburger-cell {
     display: flex !important;
     align-items: center;
@@ -303,6 +338,78 @@ body {
     grid-row: 2;
   }
 
+  /* Mobile footer: icon in left cell, text in right cell, one row each */
+  .mobile-footer-icon-cell {
+    display: flex !important;
+    grid-column: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0;
+    background-color: inherit;
+    color: white;
+  }
+
+  .mobile-footer-icon-cell svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .mobile-footer-icon-cell.mf-row-3 {
+    grid-row: 3;
+  }
+  .mobile-footer-icon-cell.mf-row-4 {
+    grid-row: 4;
+  }
+  .mobile-footer-icon-cell.mf-row-5 {
+    grid-row: 5;
+  }
+  .mobile-footer-icon-cell.mf-row-6 {
+    grid-row: 6;
+  }
+  .mobile-footer-icon-cell.mf-row-7 {
+    grid-row: 7;
+  }
+
+  .mobile-footer-text-cell {
+    display: flex !important;
+    grid-column: 2;
+    align-items: center;
+    padding: 0.5rem 1.5rem 0.5rem 1rem;
+    background-color: inherit;
+    color: white;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .mobile-footer-text-cell p {
+    margin: 0;
+  }
+
+  .mobile-footer-text-cell p + p {
+    margin-top: 0.15em;
+  }
+
+  .mobile-footer-text-cell a {
+    color: white;
+    text-decoration: underline;
+  }
+
+  .mobile-footer-text-cell.mf-row-3 {
+    grid-row: 3;
+  }
+  .mobile-footer-text-cell.mf-row-4 {
+    grid-row: 4;
+  }
+  .mobile-footer-text-cell.mf-row-5 {
+    grid-row: 5;
+  }
+  .mobile-footer-text-cell.mf-row-6 {
+    grid-row: 6;
+  }
+  .mobile-footer-text-cell.mf-row-7 {
+    grid-row: 7;
+  }
+
   .cell-content {
     display: flex !important;
     padding: 1.5rem;
@@ -315,6 +422,26 @@ body {
     font-size: 1rem;
   }
 
+  /* About Us on mobile: text at top, polaroids toward bottom; only when tab is active; no overflow */
+  .tab-content.tab-content-history.active {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .tab-content.tab-content-history.active .mission-text {
+    order: 1;
+    flex-shrink: 0;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  .about-us-polaroids {
+    display: none;
+  }
+
   .tab-button {
     padding: 0.75rem;
     font-size: 1rem;
@@ -322,6 +449,12 @@ body {
 
   .brand-button {
     font-size: 1.2rem;
+  }
+
+  /* Nav bar: always match page background; button doesn’t override */
+  .cell.tab-cell[data-tab="home"] .tab-button,
+  .cell.tab-cell[data-tab="home"] .tab-button.active {
+    background-color: transparent;
   }
 }
 
@@ -340,7 +473,7 @@ body {
 
 .mobile-menu-item:hover,
 .mobile-menu-item.active {
-  background-color: #000000;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .mobile-menu-info {
@@ -355,4 +488,10 @@ body {
 .mobile-menu-info a {
   color: white;
   text-decoration: underline;
+}
+
+/* Mobile footer: hidden on desktop */
+.mobile-footer-icon-cell,
+.mobile-footer-text-cell {
+  display: none;
 }

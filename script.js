@@ -15,7 +15,9 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   function setBackgroundColor(tabId) {
-    document.body.style.backgroundColor = tabColors[tabId] || "#000000";
+    const color = tabColors[tabId] || "#000000";
+    document.body.style.backgroundColor = color;
+    document.body.style.setProperty("--page-bg", color);
   }
 
   tabButtons.forEach((button) => {
@@ -36,15 +38,18 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Hamburger menu toggle
-  if (hamburgerBtn && mobileMenu) {
+  const contentCell = document.querySelector(".cell-content");
+
+  // Hamburger menu toggle: replace tab content with menu in the same cell
+  if (hamburgerBtn && mobileMenu && contentCell) {
     hamburgerBtn.addEventListener("click", function () {
       this.classList.toggle("active");
       mobileMenu.classList.toggle("active");
+      contentCell.classList.toggle("mobile-menu-open");
     });
   }
 
-  // Mobile menu items
+  // Mobile menu items: pick a tab, then close menu and show that tab in the cell
   mobileMenuItems.forEach((item) => {
     item.addEventListener("click", function () {
       const tabId = this.dataset.tab;
@@ -73,9 +78,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       setBackgroundColor(tabId);
 
-      // Close menu
+      // Close menu and show tab content in the cell again
       hamburgerBtn.classList.remove("active");
       mobileMenu.classList.remove("active");
+      if (contentCell) contentCell.classList.remove("mobile-menu-open");
     });
   });
 
@@ -123,6 +129,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return null;
     }
 
+    const edgeTolerance = 2;
+
     const verticalPositions = new Set();
     cellPositions.forEach((pos) => {
       const isAtRightEdge = Math.abs(pos.right - gridRect.width) < 1;
@@ -135,10 +143,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     verticalPositions.forEach((x) => {
+      if (x <= edgeTolerance || x >= gridRect.width - edgeTolerance) return;
+
       const mergedCell = getMergedCellAtX(x, mergedCells);
 
       if (mergedCell) {
-        if (mergedCell.top > 0) {
+        if (mergedCell.top > edgeTolerance) {
           const topLine = document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line",
@@ -150,7 +160,7 @@ document.addEventListener("DOMContentLoaded", function () {
           topLine.setAttribute("y2", Math.round(mergedCell.top));
           svg.appendChild(topLine);
         }
-        if (mergedCell.bottom < gridRect.height) {
+        if (mergedCell.bottom < gridRect.height - edgeTolerance) {
           const bottomLine = document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line",
@@ -184,6 +194,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     horizontalPositions.forEach((y) => {
+      if (y <= edgeTolerance || y >= gridRect.height - edgeTolerance) return;
+
       const line = document.createElementNS(
         "http://www.w3.org/2000/svg",
         "line",
