@@ -116,9 +116,13 @@ body {
 
 .about-us-polaroids {
   float: left;
-  max-width: 350px;
-  margin: 0 1.5rem 0.25rem 0;
   display: block;
+  width: auto;
+  max-width: 350px;
+  height: auto;
+  max-height: min(65vh, 420px);
+  object-fit: contain;
+  margin: 0 1.5rem 0.25rem 0;
   vertical-align: top;
 }
 
