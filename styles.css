@@ -1,3 +1,12 @@
+:root {
+  --page-bg: #141414;
+  --text: #ffffff;
+  --tab-hover-bg: rgba(255, 255, 255, 0.14);
+  --tab-active-bg: rgba(0, 0, 0, 0.42);
+  --border-subtle: rgba(255, 255, 255, 0.22);
+  --mobile-menu-hover-bg: rgba(0, 0, 0, 0.22);
+}
+
 @font-face {
   font-family: "Alte Haas Grotesk";
   src: url("AlteHaasGroteskRegular.ttf") format("truetype");
@@ -20,11 +29,43 @@
 
 body {
   font-family: "Alte Haas Grotesk", Helvetica, Arial, sans-serif;
-  background-color: #000000;
-  color: white;
+  background-color: var(--page-bg);
+  color: var(--text);
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease;
+}
+
+/* Mottled “heather” knit / tri-blend look — class `heather-bg` set randomly per load in script.js */
+body.heather-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.64;
+  mix-blend-mode: soft-light;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23h)' fill='%23777'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='i'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23i)' fill='%23666'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(
+      108deg,
+      rgba(255, 255, 255, 0.08) 0 0.5px,
+      transparent 0.5px 5px
+    ),
+    repeating-linear-gradient(
+      -18deg,
+      rgba(0, 0, 0, 0.095) 0 0.5px,
+      transparent 0.5px 7px
+    );
+  background-size:
+    220px 220px,
+    180px 180px,
+    auto,
+    auto;
 }
 
 .excel-grid {
@@ -33,6 +74,7 @@ body {
   grid-template-rows: 60px 1fr 60px;
   min-height: 100vh;
   position: relative;
+  z-index: 1;
 }
 
 .grid-overlay {
@@ -72,23 +114,30 @@ body {
 }
 
 .cell-content {
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: flex-start;
   padding: 2rem;
   min-height: 0;
   overflow: auto;
 }
 
+/* Let the visible tab use the full height of the main grid row */
+.cell-content > .tab-content.active {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .brand-button {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .mission-text {
   font-size: 1rem;
   font-weight: 300;
   line-height: 1.6;
-  color: white;
+  color: var(--text);
   width: 100%;
 }
 
@@ -101,7 +150,7 @@ body {
 }
 
 .mission-text a {
-  color: white;
+  color: var(--text);
   text-decoration: underline;
   transition: opacity 0.3s;
 }
@@ -114,44 +163,110 @@ body {
   overflow: hidden;
 }
 
+/* About Us (desktop): image column uses full tab height; text scrolls if needed */
+.tab-content.tab-content-history.active {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.tab-content.tab-content-history.active .mission-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 .about-us-polaroids {
-  float: left;
   display: block;
+  flex-shrink: 0;
   width: auto;
   max-width: 350px;
-  height: auto;
-  max-height: min(65vh, 420px);
+  height: 100%;
+  max-height: none;
   object-fit: contain;
-  margin: 0 1.5rem 0.25rem 0;
-  vertical-align: top;
+  object-position: left center;
+  margin: 0;
+  align-self: stretch;
 }
 
 .cell-hours {
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-height: 0;
+}
+
+.cell-hours .hours-stack {
+  flex: 1 1 auto;
+  min-height: 0;
+  justify-content: space-between;
+}
+
+.hours-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 0.85rem;
+}
+
+.hours-logo-mark {
+  display: block;
+  height: auto;
+  flex-shrink: 0;
+}
+
+/* Desktop hours column: logo ~25% smaller, centered in column */
+.cell-hours .hours-logo-mark {
+  width: 75%;
+  max-width: 75%;
+  align-self: center;
+  /* Top inset = side inset: (100% − 75%) / 2 of stack width; % margin-top uses containing block width */
+  margin-top: 12.5%;
 }
 
 .hours-text {
   font-size: 1.3rem;
   font-weight: 300;
-  line-height: 1.6;
-  color: white;
+  line-height: 1.25;
+  color: var(--text);
   text-align: left;
+  width: 100%;
 }
 
-.hours-text p {
-  margin-bottom: 0.5rem;
+/* Each day: label flush left, hours/closed flush right */
+.hours-text .hours-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;
+  gap: 0.75rem;
+  margin: 0 0 0.15rem;
 }
 
-.hours-text p:last-child {
+.hours-text .hours-row:last-child {
   margin-bottom: 0;
+}
+
+.hours-day {
+  flex: 0 0 auto;
+}
+
+.hours-value {
+  text-align: right;
+  flex: 0 1 auto;
+  min-width: 0;
 }
 
 .address-text,
 .email-text,
 .phone-text {
   font-size: 1.3rem;
-  font-weight: 300;
-  color: white;
+  font-weight: 700;
+  color: var(--text);
   text-align: left;
 }
 
@@ -163,7 +278,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: white;
+  color: var(--text);
   text-decoration: none;
   transition: opacity 0.3s;
 }
@@ -178,29 +293,35 @@ body {
 
 .tab-cell {
   padding: 0;
+  justify-content: flex-start;
 }
 
 .tab-button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   width: 100%;
   height: 100%;
   padding: 1rem 1.5rem;
   background-color: transparent;
-  color: white;
+  color: var(--text);
   border: none;
-  font-size: 1.3rem;
+  font-size: 1.55rem;
+  font-weight: 700;
   font-family: inherit;
   cursor: pointer;
   transition: background-color 0.3s;
   text-align: left;
+  line-height: 1.2;
 }
 
 .tab-button:hover {
-  background-color: #333333;
+  background-color: var(--tab-hover-bg);
 }
 
 .tab-button.active {
-  font-weight: 600;
-  background-color: #000000;
+  font-weight: 700;
+  background-color: var(--tab-active-bg);
 }
 
 .tab-content {
@@ -212,26 +333,63 @@ body {
   display: block;
 }
 
+/* Home only: fill the content cell and sit on the bottom */
 #home.tab-content.active {
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  min-height: 100%;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  min-height: 0;
+  width: 100%;
 }
 
 .home-tagline {
   display: flex;
   flex-direction: column;
-  font-size: clamp(4rem, 12vw, 10rem);
+  font-size: clamp(3.5rem, 10.5vw, 9rem);
   font-weight: 600;
-  color: white;
+  color: var(--text);
   margin: 0;
   text-align: left;
+}
+
+.home-tagline-headlines {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-tagline-sub {
+  font-size: 1.3rem;
+  font-weight: 300;
+  line-height: 1.25;
+  color: var(--text);
+  margin: 0.5rem 0 0;
+  max-width: 28em;
+}
+
+.home-tagline-sub-nb {
+  white-space: nowrap;
 }
 
 .home-tagline-line {
   display: block;
   line-height: 0.9;
+}
+
+.home-tagline-line--with-asterisk {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0.12em;
+}
+
+.home-tagline-asterisk {
+  font-size: 0.42em;
+  font-weight: 600;
+  line-height: 1;
+  margin: 0.12em 0 0;
+  flex-shrink: 0;
 }
 
 .hamburger-btn {
@@ -303,13 +461,14 @@ body {
     padding: 10px;
     width: 100%;
     height: 100%;
+    color: var(--text);
   }
 
   .hamburger-btn span {
     display: block;
     width: 24px;
     height: 2px;
-    background-color: white;
+    background-color: currentColor;
     transition: all 0.3s;
   }
 
@@ -342,6 +501,11 @@ body {
     grid-row: 2;
   }
 
+  .cell-content.cell-merged-3 {
+    min-height: 80vh;
+    align-self: stretch;
+  }
+
   /* Mobile footer: icon in left cell, text in right cell, one row each */
   .mobile-footer-icon-cell {
     display: flex !important;
@@ -350,7 +514,7 @@ body {
     justify-content: center;
     padding: 0.5rem 0;
     background-color: inherit;
-    color: white;
+    color: var(--text);
   }
 
   .mobile-footer-icon-cell svg {
@@ -380,9 +544,26 @@ body {
     align-items: center;
     padding: 0.5rem 1.5rem 0.5rem 1rem;
     background-color: inherit;
-    color: white;
+    color: var(--text);
     font-size: 0.95rem;
     line-height: 1.5;
+  }
+
+  .mobile-footer-text-cell .hours-text {
+    font-size: inherit;
+  }
+
+  .mobile-footer-text-cell .hours-text .hours-row {
+    justify-content: flex-start;
+    gap: 0.35rem;
+  }
+
+  .mobile-footer-text-cell .hours-text .hours-value {
+    text-align: left;
+  }
+
+  .home-tagline-sub {
+    font-size: 0.95rem;
   }
 
   .mobile-footer-text-cell p {
@@ -394,7 +575,7 @@ body {
   }
 
   .mobile-footer-text-cell a {
-    color: white;
+    color: var(--text);
     text-decoration: underline;
   }
 
@@ -414,9 +595,10 @@ body {
     grid-row: 7;
   }
 
+  /* Match mobile footer text cells: 0.5rem 1.5rem 0.5rem 1rem */
   .cell-content {
     display: flex !important;
-    padding: 1.5rem;
+    padding: 0.5rem 1.5rem 0.5rem 1rem;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
@@ -448,11 +630,11 @@ body {
 
   .tab-button {
     padding: 0.75rem;
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .brand-button {
-    font-size: 1.2rem;
+    font-size: 1.45rem;
   }
 
   /* Nav bar: always match page background; button doesn’t override */
@@ -465,8 +647,9 @@ body {
 .mobile-menu-item {
   background-color: transparent;
   border: none;
-  color: white;
-  font-size: 1.3rem;
+  color: var(--text);
+  font-size: 1.55rem;
+  font-weight: 700;
   font-family: inherit;
   padding: 1.2rem 1rem;
   text-align: left;
@@ -477,20 +660,20 @@ body {
 
 .mobile-menu-item:hover,
 .mobile-menu-item.active {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--mobile-menu-hover-bg);
 }
 
 .mobile-menu-info {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #333;
-  color: white;
+  border-top: 1px solid var(--border-subtle);
+  color: var(--text);
   font-size: 1rem;
   line-height: 2;
 }
 
 .mobile-menu-info a {
-  color: white;
+  color: var(--text);
   text-decoration: underline;
 }
 
