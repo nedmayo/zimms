@@ -340,6 +340,26 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("resize", drawGridLines);
   setTimeout(drawGridLines, 100);
 
+  function scheduleGridRedraw() {
+    requestAnimationFrame(() => {
+      drawGridLines();
+      requestAnimationFrame(drawGridLines);
+    });
+  }
+
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", scheduleGridRedraw);
+  });
+  mobileMenuItems.forEach((item) => {
+    item.addEventListener("click", scheduleGridRedraw);
+  });
+  if (hamburgerBtn) {
+    hamburgerBtn.addEventListener("click", scheduleGridRedraw);
+  }
+  if (contentCell && typeof ResizeObserver !== "undefined") {
+    new ResizeObserver(scheduleGridRedraw).observe(contentCell);
+  }
+
   const contactForm = document.getElementById("contact-form");
   const contactFormStatus = document.getElementById("contact-form-status");
 

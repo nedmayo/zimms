@@ -552,7 +552,9 @@ body.heather-bg::before {
 @media (max-width: 768px) {
   .excel-grid {
     grid-template-columns: 60px 1fr;
-    grid-template-rows: 60px 1fr repeat(5, auto);
+    grid-template-rows: 60px minmax(80vh, auto) repeat(5, auto);
+    min-height: 100vh;
+    height: auto;
   }
 
   /* When mobile menu is open, show menu in content cell and hide tab content */
@@ -636,10 +638,11 @@ body.heather-bg::before {
     grid-row: 1;
   }
 
-  /* Row 2: empty left + content */
+  /* Row 2: empty left + content — row grows with content, min 80vh */
   .cell-small {
     grid-column: 1;
     grid-row: 2;
+    align-self: stretch;
   }
 
   .cell-merged-3 {
@@ -649,7 +652,9 @@ body.heather-bg::before {
 
   .cell-content.cell-merged-3 {
     min-height: 80vh;
+    height: auto;
     align-self: stretch;
+    overflow: visible;
   }
 
   /* Mobile footer: icon in left cell, text in right cell, one row each */
@@ -748,6 +753,17 @@ body.heather-bg::before {
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
+    overflow: visible;
+  }
+
+  .cell-content > .tab-content.active {
+    flex: none;
+    min-height: auto;
+  }
+
+  #home.tab-content.active {
+    flex: 1 1 auto;
+    min-height: 80vh;
   }
 
   .mission-text {
@@ -762,22 +778,7 @@ body.heather-bg::before {
     grid-template-columns: 1fr;
   }
 
-  /* About Us on mobile: text at top, polaroids toward bottom; only when tab is active; no overflow */
-  .tab-content.tab-content-history.active {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .tab-content.tab-content-history.active .mission-text {
-    order: 1;
-    flex-shrink: 0;
-    min-height: 0;
-    overflow-y: auto;
-  }
-
+  /* About Us on mobile: polaroids hidden; text scrolls in the content cell */
   .about-us-polaroids {
     display: none;
   }
