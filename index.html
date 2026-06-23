@@ -91,14 +91,44 @@
             </div>
 
             <div class="tab-content" id="contact">
-                <div class="mission-text">
-                    <p>Place an order or ask a question. We'll get back to you soon.</p>
+                <div class="mission-text contact-page">
+                    <div class="contact-header">
+                        <p class="contact-intro"><strong>Place an order or ask a question. We'll get back to you
+                                soon.</strong> <a href="https://www.sportswearcollection.com/?site=HFMLUMRITK"
+                                target="_blank" rel="noopener noreferrer">View our blank styles</a></p>
+                    </div>
 
-                    <p><a href="mailto:zimmdrygoods@gmail.com">zimmdrygoods@gmail.com</a></p>
-                    <p><a href="tel:+16516994273">651-699-4273</a></p>
-                    <p><a href="https://www.sportswearcollection.com/?site=HFMLUMRITK" target="_blank"
-                            rel="noopener noreferrer">View our
-                            blank styles</a></p>
+                    <p class="contact-direct">
+                        <strong>Email:</strong> <a href="mailto:zimmdrygoods@gmail.com">zimmdrygoods@gmail.com</a><br>
+                        <strong>Phone:</strong> <a href="tel:+16516994273">651-699-4273</a>
+                    </p>
+
+                    <form id="contact-form" class="contact-form" novalidate>
+                        <div class="contact-form-row">
+                            <div class="contact-form-field">
+                                <label for="contact-name">Name</label>
+                                <input type="text" id="contact-name" name="name" autocomplete="name" required>
+                            </div>
+                            <div class="contact-form-field">
+                                <label for="contact-email">Email</label>
+                                <input type="email" id="contact-email" name="email" autocomplete="email" required>
+                            </div>
+                        </div>
+                        <div class="contact-form-field">
+                            <label for="contact-phone">Phone <span
+                                    class="contact-form-optional">(optional)</span></label>
+                            <input type="tel" id="contact-phone" name="phone" autocomplete="tel">
+                        </div>
+
+                        <div class="contact-form-field">
+                            <label for="contact-message">Message</label>
+                            <textarea id="contact-message" name="message" rows="4" required
+                                placeholder="Tell us what you need — quantities, styles, deadlines, etc."></textarea>
+                        </div>
+                        <button type="submit" class="contact-form-submit">Send</button>
+                        <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite" hidden>
+                        </p>
+                    </form>
                 </div>
             </div>
 
@@ -110,24 +140,39 @@
                         work with businesses, organizations, and individuals throughout the Twin Cities area.</p>
                     <p>Every project is handled with care and attention to detail, ensuring that the final product
                         exceeds expectations.</p>
-                    <p><a href="https://www.sportswearcollection.com/?site=HFMLUMRITK" target="_blank"
-                            rel="noopener noreferrer">View our
-                            blank styles</a></p>
+
+                    <p><strong>What is your turnaround time?</strong><br>
+                        Usually 2 weeks. Turnaround time varies depending on the project size and complexity. Contact us
+                        for a specific timeline for your order.</p>
+
+                    <p><strong>Do you offer bulk pricing?</strong><br>
+                        Yes, we offer competitive pricing for bulk orders. Contact us for a quote.</p>
+
+                    <p><strong>What blank styles do you offer?</strong><br>
+                        View our blank styles <a href="https://www.sportswearcollection.com/?site=HFMLUMRITK"
+                            target="_blank" rel="noopener noreferrer">here</a>. Please note that we may not be able to
+                        print on all styles.</p>
                 </div>
             </div>
 
-            <div class="tab-content" id="faq">
+            <div class="tab-content" id="storefront">
                 <div class="mission-text">
-                    <p><strong>What is your turnaround time?</strong><br>
-                        Turnaround time varies depending on the project size and complexity. Contact us for a specific
-                        timeline for your order.</p>
-                    <p><strong>Do you offer design services?</strong><br>
-                        Yes, we can help create or refine your design for optimal printing results.</p>
-                    <p><strong>What materials do you use?</strong><br>
-                        We use high-quality materials and inks to ensure durability and vibrant colors in all our screen
-                        printing projects.</p>
-                    <p><strong>Do you offer bulk pricing?</strong><br>
-                        Yes, we offer competitive pricing for bulk orders. Contact us for a quote.</p>
+                    <p>Visit our storefront at 1656 Grand Ave in St Paul.</p>
+
+                    <p><strong>Prints</strong><br>
+                        Screen-printed tees, sweatshirts, and more from our in-house designs.</p>
+
+                    <p><strong>Bloopers</strong><br>
+                        Look through the gaffe and test prints we've madeu. Unique and cheap finds!</p>
+
+                    <p><strong>Vintage</strong><br>
+                        Curated secondhand clothing and goods.</p>
+
+                    <p><strong>Military surplus</strong><br>
+                        Jackets, bags, gear, and other surplus.</p>
+
+                    <p><strong>Gifts</strong><br>
+                        Perfect for giving (or keeping).</p>
                 </div>
             </div>
 
@@ -136,7 +181,7 @@
                 <button class="mobile-menu-item" data-tab="history">About Us</button>
                 <button class="mobile-menu-item" data-tab="our-work">Our Work</button>
                 <button class="mobile-menu-item" data-tab="contact">Contact+Order</button>
-                <button class="mobile-menu-item" data-tab="faq">FAQ</button>
+                <button class="mobile-menu-item" data-tab="storefront">Storefront</button>
             </div>
         </div>
         <!-- Mobile footer: each row = left cell (icon) + right cell (text) -->
@@ -236,8 +281,8 @@
         <div class="cell">
             <div class="phone-text">(651) 699-4273</div>
         </div>
-        <div class="cell tab-cell cell-no-right-border" data-tab="faq">
-            <button class="tab-button">FAQ</button>
+        <div class="cell tab-cell cell-no-right-border" data-tab="storefront">
+            <button class="tab-button">Storefront</button>
         </div>
     </div>
 

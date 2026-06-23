@@ -339,4 +339,57 @@ document.addEventListener("DOMContentLoaded", function () {
   drawGridLines();
   window.addEventListener("resize", drawGridLines);
   setTimeout(drawGridLines, 100);
+
+  const contactForm = document.getElementById("contact-form");
+  const contactFormStatus = document.getElementById("contact-form-status");
+
+  if (contactForm && contactFormStatus) {
+    contactForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (!contactForm.reportValidity()) {
+        return;
+      }
+
+      const submitButton = contactForm.querySelector(".contact-form-submit");
+      submitButton.disabled = true;
+      contactFormStatus.hidden = true;
+      contactFormStatus.classList.remove("is-success", "is-error");
+
+      const formData = new FormData(contactForm);
+      formData.append(
+        "_subject",
+        `Zimms site: ${formData.get("topic") || "Inquiry"}`,
+      );
+      formData.append("_template", "table");
+
+      try {
+        const response = await fetch(
+          "https://formsubmit.co/ajax/zimmdrygoods@gmail.com",
+          {
+            method: "POST",
+            body: formData,
+            headers: { Accept: "application/json" },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Request failed");
+        }
+
+        contactForm.reset();
+        contactFormStatus.textContent =
+          "Thanks — your message was sent. We'll be in touch soon.";
+        contactFormStatus.classList.add("is-success");
+        contactFormStatus.hidden = false;
+      } catch {
+        contactFormStatus.textContent =
+          "Something went wrong. Please email us directly at zimmdrygoods@gmail.com.";
+        contactFormStatus.classList.add("is-error");
+        contactFormStatus.hidden = false;
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  }
 });

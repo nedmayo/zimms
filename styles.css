@@ -10,15 +10,20 @@
 @font-face {
   font-family: "Alte Haas Grotesk";
   src: url("AlteHaasGroteskRegular.ttf") format("truetype");
-  font-weight: normal;
+  font-weight: 100 500;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Alte Haas Grotesk";
   src: url("AlteHaasGroteskBold.ttf") format("truetype");
-  font-weight: bold;
+  font-weight: 600 900;
   font-style: normal;
+}
+
+strong,
+b {
+  font-weight: 700;
 }
 
 * {
@@ -157,6 +162,147 @@ body.heather-bg::before {
 
 .mission-text a:hover {
   opacity: 0.8;
+}
+
+.contact-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.contact-intro,
+.contact-blank-styles {
+  margin-bottom: 0;
+}
+
+.contact-blank-styles {
+  flex-shrink: 0;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 38rem;
+  margin-bottom: 0;
+  padding: 1.25rem 1.5rem;
+  background-color: var(--tab-active-bg);
+  box-sizing: border-box;
+}
+
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.contact-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.contact-form-field label {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.contact-form-optional {
+  font-weight: 300;
+}
+
+.contact-form-field input,
+.contact-form-field select,
+.contact-form-field textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--text);
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid var(--border-subtle);
+  padding: 0.4rem 0;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.contact-form-field input:focus,
+.contact-form-field select:focus,
+.contact-form-field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--text);
+}
+
+.contact-form-field select {
+  cursor: pointer;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text) 50%),
+    linear-gradient(135deg, var(--text) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) calc(50% + 2px),
+    calc(100% - 9px) calc(50% + 2px);
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.5rem;
+}
+
+.contact-form-field textarea {
+  resize: none;
+  height: 5.5rem;
+  min-height: 5.5rem;
+  max-height: 5.5rem;
+  overflow-y: auto;
+  line-height: 1.4;
+}
+
+.contact-form-submit {
+  align-self: flex-start;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  background-color: transparent;
+  border: 2px solid var(--border-subtle);
+  padding: 0.65rem 1.5rem;
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    background-color 0.2s;
+}
+
+.contact-form-submit:hover:not(:disabled) {
+  background-color: var(--tab-hover-bg);
+  opacity: 1;
+}
+
+.contact-form-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.contact-form-status {
+  margin: 0;
+  font-weight: 700;
+}
+
+.contact-form-status.is-success {
+  color: var(--text);
+}
+
+.contact-form-status.is-error {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.contact-direct {
+  margin-bottom: 1.5rem;
 }
 
 .tab-content-history {
@@ -421,7 +567,7 @@ body.heather-bg::before {
   /* Hide desktop-only cells */
   .cell.tab-cell[data-tab="history"],
   .cell.tab-cell[data-tab="our-work"],
-  .cell.tab-cell[data-tab="faq"],
+  .cell.tab-cell[data-tab="storefront"],
   .cell.tab-cell[data-tab="contact"],
   .cell.cell-no-right-border:not(.hamburger-cell):not(.cell-content),
   .cell:has(.hours-text),
@@ -606,6 +752,14 @@ body.heather-bg::before {
 
   .mission-text {
     font-size: 1rem;
+  }
+
+  .contact-form {
+    max-width: none;
+  }
+
+  .contact-form-row {
+    grid-template-columns: 1fr;
   }
 
   /* About Us on mobile: text at top, polaroids toward bottom; only when tab is active; no overflow */
