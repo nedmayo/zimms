@@ -56,6 +56,12 @@
             <button class="tab-button">Contact+Order</button>
         </div>
 
+        <!-- Mobile: current page label above content -->
+        <div class="cell cell-small mobile-only mobile-page-spacer" aria-hidden="true"></div>
+        <div class="cell mobile-only mobile-current-page" id="mobile-current-page">
+            <span id="mobile-current-page-label">Menu</span>
+        </div>
+
         <!-- Row 2: Very big -->
         <div class="cell cell-small"></div>
         <div class="cell cell-merged-3 cell-content cell-no-left-border">
@@ -98,11 +104,6 @@
                                 target="_blank" rel="noopener noreferrer">View our blank styles</a></p>
                     </div>
 
-                    <p class="contact-direct">
-                        <strong>Email:</strong> <a href="mailto:zimmdrygoods@gmail.com">zimmdrygoods@gmail.com</a><br>
-                        <strong>Phone:</strong> <a href="tel:+16516994273">651-699-4273</a>
-                    </p>
-
                     <form id="contact-form" class="contact-form" novalidate>
                         <div class="contact-form-row">
                             <div class="contact-form-field">
@@ -129,6 +130,10 @@
                         <p class="contact-form-status" id="contact-form-status" role="status" aria-live="polite" hidden>
                         </p>
                     </form>
+                    <p class="contact-direct">
+                        <strong>Email:</strong> <a href="mailto:zimmdrygoods@gmail.com">zimmdrygoods@gmail.com</a><br>
+                        <strong>Phone:</strong> <a href="tel:+16516994273">651-699-4273</a>
+                    </p>
                 </div>
             </div>
 
@@ -175,56 +180,55 @@
                         Perfect for giving (or keeping).</p>
                 </div>
             </div>
-
-            <!-- Mobile menu: replaces tab content in this cell when open -->
-            <div id="mobile-menu" class="mobile-menu">
-                <button class="mobile-menu-item" data-tab="history">About Us</button>
-                <button class="mobile-menu-item" data-tab="our-work">Our Work</button>
-                <button class="mobile-menu-item" data-tab="contact">Contact+Order</button>
-                <button class="mobile-menu-item" data-tab="storefront">Storefront</button>
-            </div>
+            <nav class="mobile-menu" id="mobile-menu" aria-label="Site navigation">
+                <button type="button" class="mobile-menu-item" data-tab="history">About Us</button>
+                <button type="button" class="mobile-menu-item" data-tab="our-work">Our Work</button>
+                <button type="button" class="mobile-menu-item" data-tab="contact">Contact+Order</button>
+                <button type="button" class="mobile-menu-item" data-tab="storefront">Storefront</button>
+            </nav>
         </div>
+
         <!-- Mobile footer: each row = left cell (icon) + right cell (text) -->
-        <div class="cell mobile-footer-icon-cell mf-row-3" aria-hidden="true">
+        <div class="cell mobile-footer-icon-cell" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
             </svg>
         </div>
-        <div class="cell mobile-footer-text-cell mf-row-3">
+        <div class="cell mobile-footer-text-cell cell-no-right-border">
             <div class="hours-text">
                 <p class="hours-row"><span class="hours-day">Sun-Mon:</span> <span class="hours-value">Closed</span></p>
                 <p class="hours-row"><span class="hours-day">Tues-Sat:</span> <span class="hours-value">10am-5pm</span>
                 </p>
             </div>
         </div>
-        <div class="cell mobile-footer-icon-cell mf-row-4" aria-hidden="true">
+        <div class="cell mobile-footer-icon-cell" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                 <circle cx="12" cy="10" r="3" />
             </svg>
         </div>
-        <div class="cell mobile-footer-text-cell mf-row-4">1656 Grand Ave, St Paul, MN 55105</div>
-        <div class="cell mobile-footer-icon-cell mf-row-5" aria-hidden="true">
+        <div class="cell mobile-footer-text-cell cell-no-right-border">1656 Grand Ave, St Paul, MN 55105</div>
+        <div class="cell mobile-footer-icon-cell" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                 <polyline points="22,6 12,13 2,6" />
             </svg>
         </div>
-        <div class="cell mobile-footer-text-cell mf-row-5"><a
+        <div class="cell mobile-footer-text-cell cell-no-right-border"><a
                 href="mailto:zimmdrygoods@gmail.com">zimmdrygoods@gmail.com</a></div>
-        <div class="cell mobile-footer-icon-cell mf-row-6" aria-hidden="true">
+        <div class="cell mobile-footer-icon-cell" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <path
                     d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
             </svg>
         </div>
-        <div class="cell mobile-footer-text-cell mf-row-6"><a href="tel:+16516994273">651-699-4273</a></div>
-        <div class="cell mobile-footer-icon-cell mf-row-7" aria-hidden="true">
+        <div class="cell mobile-footer-text-cell cell-no-right-border"><a href="tel:+16516994273">651-699-4273</a></div>
+        <div class="cell mobile-footer-icon-cell" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -232,7 +236,7 @@
                 <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
             </svg>
         </div>
-        <div class="cell mobile-footer-text-cell mf-row-7"><a href="https://www.instagram.com/zimmprinting/"
+        <div class="cell mobile-footer-text-cell cell-no-right-border"><a href="https://www.instagram.com/zimmprinting/"
                 target="_blank" rel="noopener noreferrer">Instagram</a></div>
         <div class="cell cell-no-right-border cell-hours">
             <div class="hours-stack">

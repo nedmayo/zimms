@@ -2,61 +2,53 @@ document.addEventListener("DOMContentLoaded", function () {
   const tabButtons = document.querySelectorAll(".tab-button");
   const tabContents = document.querySelectorAll(".tab-content");
   const hamburgerBtn = document.querySelector(".hamburger-btn");
-  const mobileMenu = document.getElementById("mobile-menu");
+  const excelGrid = document.querySelector(".excel-grid");
   const mobileMenuItems = document.querySelectorAll(".mobile-menu-item");
+  const mobilePageLabel = document.getElementById("mobile-current-page-label");
+  const PAGE_LABELS = {
+    home: "Menu",
+    history: "About Us",
+    "our-work": "Our Work",
+    contact: "Contact+Order",
+    storefront: "Storefront",
+  };
+  let activeTabId = "home";
 
   /** Apparel-blank style swatches — random on load and whenever you open a tab */
   const APPAREL_PALETTE = [
     { name: "White", hex: "#FFFFFF" },
     { name: "Black", hex: "#141414" },
-    { name: "Ash Grey", hex: "#8B8B8B" },
-    { name: "Athletic Heather", hex: "#A7A9AC" },
     { name: "Banana Cream", hex: "#F5E6B8" },
     { name: "Berry", hex: "#8E4585" },
-    { name: "Bright Coral", hex: "#FF6B6B" },
     { name: "Brown", hex: "#5D4037" },
     { name: "Burgundy", hex: "#722F37" },
     { name: "Cardinal", hex: "#C41E3A" },
     { name: "Celadon", hex: "#A8C3A0" },
     { name: "Charcoal", hex: "#3D3D3D" },
     { name: "Chocolate", hex: "#4E342E" },
-    { name: "Copper", hex: "#B87333" },
     { name: "Cream", hex: "#F5F0DC" },
     { name: "Dark Chocolate", hex: "#3E2723" },
     { name: "Dark Grey Heather", hex: "#4A4A4A" },
     { name: "Dark Olive", hex: "#556B2F" },
     { name: "Dust", hex: "#E8DCD0" },
-    { name: "Dusty Blue", hex: "#6B8EAD" },
-    { name: "Dusty Rose", hex: "#C4A4A4" },
     { name: "Forest", hex: "#2D4A32" },
-    { name: "Gold", hex: "#D4AF37" },
     { name: "Graphite Heather", hex: "#63666A" },
-    { name: "Heather Aqua", hex: "#8FB8BC" },
     { name: "Heather Charcoal", hex: "#5C5C5C" },
     { name: "Heather Dust", hex: "#D8C4B5" },
-    { name: "Heather Grey", hex: "#A9A9A9" },
     { name: "Heather Ice Blue", hex: "#B5C9D6" },
     { name: "Heather Mint", hex: "#A8C5BB" },
     { name: "Heather Peach", hex: "#E8C4B8" },
-    { name: "Heather Slate", hex: "#7C8B95" },
     { name: "Indigo", hex: "#3D2B56" },
     { name: "Ivory / Natural", hex: "#F2E8DA" },
-    { name: "Kelly Green", hex: "#2E8B3E" },
     { name: "Key Lime", hex: "#C4E538" },
-    { name: "Khaki", hex: "#C3B091" },
     { name: "Lavender", hex: "#D8BFD8" },
     { name: "Light Blue", hex: "#A8C8EC" },
     { name: "Light Pink", hex: "#FFB6C1" },
-    { name: "Lilac", hex: "#C8A2C8" },
     { name: "Maroon", hex: "#800000" },
-    { name: "Mauve", hex: "#B784A7" },
     { name: "Midnight", hex: "#1C1F2A" },
     { name: "Military Green", hex: "#4A5D23" },
     { name: "Mint", hex: "#9FD9C9" },
-    { name: "Moss", hex: "#8A9A5B" },
-    { name: "Mustard", hex: "#D4A017" },
     { name: "Olive", hex: "#6B7C3F" },
-    { name: "Orange", hex: "#E85D04" },
     { name: "Peach", hex: "#FFCCBC" },
     { name: "Pink", hex: "#F4B6C2" },
     { name: "Powder Blue", hex: "#B8D9EB" },
@@ -64,18 +56,13 @@ document.addEventListener("DOMContentLoaded", function () {
     { name: "Red", hex: "#CE2029" },
     { name: "Royal Blue", hex: "#27408B" },
     { name: "Rust", hex: "#B7410E" },
-    { name: "Safety Green", hex: "#00A651" },
-    { name: "Sage", hex: "#9CAB86" },
     { name: "Sand", hex: "#D4C4A8" },
     { name: "Seafoam", hex: "#7EC8B8" },
     { name: "Sky", hex: "#7EC8E3" },
-    { name: "Slate", hex: "#708090" },
     { name: "Steel Blue", hex: "#4A6FA5" },
-    { name: "Sunset Orange", hex: "#E55B13" },
     { name: "Tan", hex: "#D2B48C" },
     { name: "Teal", hex: "#0D7377" },
     { name: "True Navy", hex: "#1B2838" },
-    { name: "Turquoise", hex: "#2EC4B6" },
     { name: "Texas Orange", hex: "#BF5700" },
     { name: "Violet", hex: "#7B5BA6" },
     { name: "Wheat", hex: "#E8D5B7" },
@@ -103,7 +90,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function applyRandomTheme() {
-    const pick = APPAREL_PALETTE[Math.floor(Math.random() * APPAREL_PALETTE.length)];
+    const pick =
+      APPAREL_PALETTE[Math.floor(Math.random() * APPAREL_PALETTE.length)];
     const bg = pick.hex;
     const lum = relativeLuminance(bg);
     const lightBg = lum > 0.45;
@@ -136,83 +124,75 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /**
-   * Random heather / mélange fabric grain (noise + subtle weave), ~40% of visits.
-   */
-  function maybeApplyHeatherTexture() {
-    if (Math.random() >= 0.4) return;
-    document.body.classList.add("heather-bg");
+  applyRandomTheme();
+  if (Math.random() < 0.5) {
+    document.body.classList.add("fabric-heather");
   }
 
-  applyRandomTheme();
-  maybeApplyHeatherTexture();
+  function updateMobilePageLabel(tabId = activeTabId) {
+    if (!mobilePageLabel) return;
+    if (excelGrid && excelGrid.classList.contains("menu-open")) {
+      mobilePageLabel.textContent = "Menu";
+      return;
+    }
+    mobilePageLabel.textContent = PAGE_LABELS[tabId] || "Menu";
+  }
+
+  function closeMobileMenu() {
+    if (excelGrid) excelGrid.classList.remove("menu-open");
+    if (hamburgerBtn) hamburgerBtn.classList.remove("active");
+  }
+
+  function activateTab(tabId) {
+    activeTabId = tabId;
+    tabButtons.forEach((btn) => btn.classList.remove("active"));
+    tabContents.forEach((content) => content.classList.remove("active"));
+
+    const matchingBtn = document.querySelector(
+      `.tab-cell[data-tab="${tabId}"] .tab-button`,
+    );
+    if (matchingBtn) matchingBtn.classList.add("active");
+
+    const targetContent = document.getElementById(tabId);
+    if (targetContent) targetContent.classList.add("active");
+
+    applyRandomTheme();
+    closeMobileMenu();
+    updateMobilePageLabel(tabId);
+    scheduleGridRedraw();
+  }
 
   tabButtons.forEach((button) => {
     button.addEventListener("click", function () {
       const tabId = this.closest(".tab-cell").dataset.tab;
-
-      tabButtons.forEach((btn) => btn.classList.remove("active"));
-      tabContents.forEach((content) => content.classList.remove("active"));
-
-      this.classList.add("active");
-
-      const targetContent = document.getElementById(tabId);
-      if (targetContent) {
-        targetContent.classList.add("active");
-      }
-
-      applyRandomTheme();
+      activateTab(tabId);
     });
   });
 
-  const contentCell = document.querySelector(".cell-content");
-
-  // Hamburger menu toggle: replace tab content with menu in the same cell
-  if (hamburgerBtn && mobileMenu && contentCell) {
+  if (hamburgerBtn && excelGrid) {
     hamburgerBtn.addEventListener("click", function () {
+      excelGrid.classList.toggle("menu-open");
       this.classList.toggle("active");
-      mobileMenu.classList.toggle("active");
-      contentCell.classList.toggle("mobile-menu-open");
+      updateMobilePageLabel(activeTabId);
     });
   }
 
-  // Mobile menu items: pick a tab, then close menu and show that tab in the cell
+  const activeButton = document.querySelector(".tab-cell .tab-button.active");
+  const activeCell = activeButton ? activeButton.closest(".tab-cell") : null;
+  if (activeCell && activeCell.dataset.tab) {
+    activeTabId = activeCell.dataset.tab;
+  }
+  updateMobilePageLabel(activeTabId);
+
   mobileMenuItems.forEach((item) => {
     item.addEventListener("click", function () {
-      const tabId = this.dataset.tab;
-
-      // Remove active from all mobile items
-      mobileMenuItems.forEach((i) => i.classList.remove("active"));
-      this.classList.add("active");
-
-      // Sync with desktop tabs
-      tabButtons.forEach((btn) => btn.classList.remove("active"));
-      tabContents.forEach((content) => content.classList.remove("active"));
-
-      // Find matching desktop button and activate
-      const matchingDesktopBtn = document.querySelector(
-        `.tab-cell[data-tab="${tabId}"] .tab-button`,
-      );
-      if (matchingDesktopBtn) {
-        matchingDesktopBtn.classList.add("active");
-      }
-
-      // Show content if applicable
-      const targetContent = document.getElementById(tabId);
-      if (targetContent) {
-        targetContent.classList.add("active");
-      }
-
-      applyRandomTheme();
-
-      // Close menu and show tab content in the cell again
-      hamburgerBtn.classList.remove("active");
-      mobileMenu.classList.remove("active");
-      if (contentCell) contentCell.classList.remove("mobile-menu-open");
+      activateTab(item.dataset.tab);
     });
   });
 
   function drawGridLines() {
+    if (window.matchMedia("(max-width: 768px)").matches) return;
+
     const grid = document.querySelector(".excel-grid");
     const svg = document.querySelector(".grid-overlay");
     if (!grid || !svg) return;
@@ -220,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (cells.length === 0) return;
 
     svg.innerHTML =
-      '<defs><style>.grid-line { stroke: var(--text); stroke-width: 3; vector-effect: non-scaling-stroke; }</style></defs>';
+      "<defs><style>.grid-line { stroke: var(--text); stroke-width: 3; vector-effect: non-scaling-stroke; }</style></defs>";
 
     const gridRect = grid.getBoundingClientRect();
     const gridTop = gridRect.top;
@@ -347,17 +327,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  tabButtons.forEach((button) => {
-    button.addEventListener("click", scheduleGridRedraw);
-  });
-  mobileMenuItems.forEach((item) => {
-    item.addEventListener("click", scheduleGridRedraw);
-  });
-  if (hamburgerBtn) {
-    hamburgerBtn.addEventListener("click", scheduleGridRedraw);
-  }
+  const contentCell = document.querySelector(".cell-content");
   if (contentCell && typeof ResizeObserver !== "undefined") {
-    new ResizeObserver(scheduleGridRedraw).observe(contentCell);
+    new ResizeObserver(() => {
+      if (!window.matchMedia("(max-width: 768px)").matches) {
+        scheduleGridRedraw();
+      }
+    }).observe(contentCell);
   }
 
   const contactForm = document.getElementById("contact-form");

@@ -44,27 +44,27 @@ body {
     color 0.35s ease;
 }
 
-/* Mottled “heather” knit / tri-blend look — class `heather-bg` set randomly per load in script.js */
-body.heather-bg::before {
+/* Mottled tri-blend / heather knit — `fabric-heather` set randomly per load in script.js */
+body.fabric-heather::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.64;
-  mix-blend-mode: soft-light;
+  opacity: 0.82;
+  mix-blend-mode: overlay;
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23h)' fill='%23777'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='i'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23i)' fill='%23666'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='h'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23h)' fill='%23555'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='i'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23i)' fill='%23444'/%3E%3C/svg%3E"),
     repeating-linear-gradient(
       108deg,
-      rgba(255, 255, 255, 0.08) 0 0.5px,
-      transparent 0.5px 5px
+      rgba(255, 255, 255, 0.14) 0 0.5px,
+      transparent 0.5px 4px
     ),
     repeating-linear-gradient(
       -18deg,
-      rgba(0, 0, 0, 0.095) 0 0.5px,
-      transparent 0.5px 7px
+      rgba(0, 0, 0, 0.16) 0 0.5px,
+      transparent 0.5px 6px
     );
   background-size:
     220px 220px,
@@ -190,8 +190,16 @@ body.heather-bg::before {
   max-width: 38rem;
   margin-bottom: 0;
   padding: 1.25rem 1.5rem;
-  background-color: var(--tab-active-bg);
+  background-color: transparent;
   box-sizing: border-box;
+}
+
+.contact-page .contact-form {
+  max-width: none;
+  width: calc(100% + 4rem);
+  margin: 0.5rem -2rem 0 -2rem;
+  padding: 1rem 2rem;
+  border-top: 3px solid var(--text);
 }
 
 .contact-form-row {
@@ -302,7 +310,7 @@ body.heather-bg::before {
 }
 
 .contact-direct {
-  margin-bottom: 1.5rem;
+  margin: 1rem 0 0;
 }
 
 .tab-content-history {
@@ -542,28 +550,39 @@ body.heather-bg::before {
   display: none;
 }
 
+/* Mobile-only grid cells: hidden on desktop */
+.mobile-only,
+.mobile-footer-icon-cell,
+.mobile-footer-text-cell {
+  display: none;
+}
+
 .mobile-menu {
   display: none;
-  flex-direction: column;
-  padding: 1.5rem 0 0;
-  width: 100%;
 }
 
 @media (max-width: 768px) {
+  /* CSS borders instead of SVG overlay — avoids scroll/redraw glitches */
+  .grid-overlay {
+    display: none;
+  }
+
   .excel-grid {
     grid-template-columns: 60px 1fr;
-    grid-template-rows: 60px minmax(80vh, auto) repeat(5, auto);
+    grid-template-rows: 60px 60px;
+    grid-auto-rows: auto;
     min-height: 100vh;
-    height: auto;
+    border-top: 3px solid var(--text);
+    border-left: 3px solid var(--text);
   }
 
-  /* When mobile menu is open, show menu in content cell and hide tab content */
-  .cell-content.mobile-menu-open .tab-content {
-    display: none !important;
+  .excel-grid > .cell {
+    border-right: 3px solid var(--text);
+    border-bottom: 3px solid var(--text);
   }
 
-  .mobile-menu.active {
-    display: flex;
+  .excel-grid > .cell.cell-no-right-border {
+    border-right: none;
   }
 
   /* Hide desktop-only cells */
@@ -571,8 +590,10 @@ body.heather-bg::before {
   .cell.tab-cell[data-tab="our-work"],
   .cell.tab-cell[data-tab="storefront"],
   .cell.tab-cell[data-tab="contact"],
-  .cell.cell-no-right-border:not(.hamburger-cell):not(.cell-content),
-  .cell:has(.hours-text),
+  .cell.cell-no-right-border:not(.hamburger-cell):not(.cell-content):not(
+      .mobile-footer-text-cell
+    ):not(.mobile-current-page),
+  .cell:has(.hours-stack),
   .cell:has(.address-text),
   .cell:has(.email-text),
   .cell:has(.phone-text),
@@ -580,21 +601,45 @@ body.heather-bg::before {
     display: none;
   }
 
-  /* Row 1: hamburger + brand – match page background, avoid border issues */
+  /* Show mobile-only cells */
+  .mobile-only,
+  .mobile-footer-icon-cell,
+  .mobile-footer-text-cell {
+    display: flex;
+  }
+
+  /* Menu open: keep header row, show nav in content row */
+  .excel-grid.menu-open .cell-content .mobile-menu {
+    display: flex;
+  }
+
+  .excel-grid.menu-open .cell-content .tab-content,
+  .excel-grid.menu-open .mobile-footer-icon-cell,
+  .excel-grid.menu-open .mobile-footer-text-cell {
+    display: none !important;
+  }
+
+  .excel-grid.menu-open .cell-small:not(.mobile-only) {
+    display: flex;
+  }
+
+  /* Row 1: hamburger + brand */
   .hamburger-cell,
   .cell.tab-cell[data-tab="home"] {
     background-color: inherit;
-    min-height: 0;
+    min-height: 60px;
     overflow: hidden;
   }
 
   .hamburger-cell {
-    display: flex !important;
     align-items: center;
     justify-content: center;
+    align-self: start;
     padding: 0;
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
+    min-height: 60px;
+    height: 60px;
   }
 
   .hamburger-btn {
@@ -632,39 +677,127 @@ body.heather-bg::before {
     transform: rotate(-45deg) translate(5px, -5px);
   }
 
-  /* Brand cell spans to fill row */
+  .mobile-page-spacer {
+    display: flex;
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 60px;
+    padding: 0;
+  }
+
+  .mobile-current-page {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    max-height: 60px;
+    padding: 0 !important;
+    min-height: 60px;
+    overflow: hidden;
+  }
+
+  #mobile-current-page-label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 60px;
+    height: 60px;
+    padding: 0 1.5rem 0 1rem;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    background-color: var(--tab-active-bg);
+    box-sizing: border-box;
+  }
+
+  .excel-grid.menu-open .mobile-current-page {
+    padding: 0 !important;
+  }
+
+  .cell-content .mobile-menu {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  /* Content row */
+  .cell-small:not(.mobile-only) {
+    grid-column: 1;
+    padding: 0;
+    min-height: 0;
+  }
+
+  .cell-merged-3 {
+    grid-column: 2;
+  }
+
+  .cell-content.cell-merged-3 {
+    min-height: 60vh;
+    padding: 0.5rem 1.5rem 0.5rem 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    overflow: visible;
+  }
+
+  .excel-grid.menu-open .cell-content.cell-merged-3 {
+    padding: 0;
+  }
+
+  .mobile-menu-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 60px;
+    padding: 0.75rem 1.5rem 0.75rem 1rem;
+    background-color: transparent;
+    border: none;
+    border-top: 3px solid var(--text);
+    color: var(--text);
+    font-size: 1.2rem;
+    font-weight: 700;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-sizing: border-box;
+  }
+
+  .mobile-menu-item:first-child {
+    border-top: none;
+  }
+
+  .mobile-menu-item:last-child {
+    border-bottom: 3px solid var(--text);
+  }
+
+  .mobile-menu-item:hover {
+    background-color: var(--tab-hover-bg);
+  }
+
   .cell.tab-cell[data-tab="home"] {
     grid-column: 2;
     grid-row: 1;
   }
 
-  /* Row 2: empty left + content — row grows with content, min 80vh */
-  .cell-small {
-    grid-column: 1;
-    grid-row: 2;
-    align-self: stretch;
+  .cell-content > .tab-content.active {
+    flex: none;
+    min-height: auto;
   }
 
-  .cell-merged-3 {
-    grid-column: 2;
-    grid-row: 2;
+  #home.tab-content.active {
+    flex: 1 1 auto;
+    min-height: 50vh;
   }
 
-  .cell-content.cell-merged-3 {
-    min-height: 80vh;
-    height: auto;
-    align-self: stretch;
-    overflow: visible;
-  }
-
-  /* Mobile footer: icon in left cell, text in right cell, one row each */
+  /* Mobile footer */
   .mobile-footer-icon-cell {
-    display: flex !important;
     grid-column: 1;
     align-items: center;
     justify-content: center;
     padding: 0.5rem 0;
-    background-color: inherit;
+    min-height: 60px;
     color: var(--text);
   }
 
@@ -673,28 +806,11 @@ body.heather-bg::before {
     height: 20px;
   }
 
-  .mobile-footer-icon-cell.mf-row-3 {
-    grid-row: 3;
-  }
-  .mobile-footer-icon-cell.mf-row-4 {
-    grid-row: 4;
-  }
-  .mobile-footer-icon-cell.mf-row-5 {
-    grid-row: 5;
-  }
-  .mobile-footer-icon-cell.mf-row-6 {
-    grid-row: 6;
-  }
-  .mobile-footer-icon-cell.mf-row-7 {
-    grid-row: 7;
-  }
-
   .mobile-footer-text-cell {
-    display: flex !important;
     grid-column: 2;
     align-items: center;
     padding: 0.5rem 1.5rem 0.5rem 1rem;
-    background-color: inherit;
+    min-height: 60px;
     color: var(--text);
     font-size: 0.95rem;
     line-height: 1.5;
@@ -730,48 +846,18 @@ body.heather-bg::before {
     text-decoration: underline;
   }
 
-  .mobile-footer-text-cell.mf-row-3 {
-    grid-row: 3;
-  }
-  .mobile-footer-text-cell.mf-row-4 {
-    grid-row: 4;
-  }
-  .mobile-footer-text-cell.mf-row-5 {
-    grid-row: 5;
-  }
-  .mobile-footer-text-cell.mf-row-6 {
-    grid-row: 6;
-  }
-  .mobile-footer-text-cell.mf-row-7 {
-    grid-row: 7;
-  }
-
-  /* Match mobile footer text cells: 0.5rem 1.5rem 0.5rem 1rem */
-  .cell-content {
-    display: flex !important;
-    padding: 0.5rem 1.5rem 0.5rem 1rem;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    overflow: visible;
-  }
-
-  .cell-content > .tab-content.active {
-    flex: none;
-    min-height: auto;
-  }
-
-  #home.tab-content.active {
-    flex: 1 1 auto;
-    min-height: 80vh;
+  .home-tagline-sub {
+    font-size: 0.95rem;
   }
 
   .mission-text {
     font-size: 1rem;
   }
 
-  .contact-form {
-    max-width: none;
+  .contact-page .contact-form {
+    width: calc(100% + 2.5rem);
+    margin: 0.5rem -1.5rem -0.5rem -1rem;
+    padding: 1rem;
   }
 
   .contact-form-row {
@@ -797,43 +883,4 @@ body.heather-bg::before {
   .cell.tab-cell[data-tab="home"] .tab-button.active {
     background-color: transparent;
   }
-}
-
-.mobile-menu-item {
-  background-color: transparent;
-  border: none;
-  color: var(--text);
-  font-size: 1.55rem;
-  font-weight: 700;
-  font-family: inherit;
-  padding: 1.2rem 1rem;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  width: 100%;
-}
-
-.mobile-menu-item:hover,
-.mobile-menu-item.active {
-  background-color: var(--mobile-menu-hover-bg);
-}
-
-.mobile-menu-info {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-subtle);
-  color: var(--text);
-  font-size: 1rem;
-  line-height: 2;
-}
-
-.mobile-menu-info a {
-  color: var(--text);
-  text-decoration: underline;
-}
-
-/* Mobile footer: hidden on desktop */
-.mobile-footer-icon-cell,
-.mobile-footer-text-cell {
-  display: none;
 }
