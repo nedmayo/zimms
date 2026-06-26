@@ -353,9 +353,12 @@ document.addEventListener("DOMContentLoaded", function () {
       contactFormStatus.classList.remove("is-success", "is-error");
 
       const formData = new FormData(contactForm);
+      const rawName = formData.get("name");
+      const requesterName =
+        typeof rawName === "string" ? rawName.trim() : "";
       formData.append(
         "_subject",
-        `Zimms site: ${formData.get("topic") || "Inquiry"}`,
+        `Request: ${requesterName || "Unknown"}`,
       );
       formData.append("_template", "table");
 
