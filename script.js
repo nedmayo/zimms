@@ -354,12 +354,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const formData = new FormData(contactForm);
       const rawName = formData.get("name");
-      const requesterName =
-        typeof rawName === "string" ? rawName.trim() : "";
-      formData.append(
-        "_subject",
-        `Request: ${requesterName || "Unknown"}`,
-      );
+      const requesterName = typeof rawName === "string" ? rawName.trim() : "";
+      const rawEmail = formData.get("email");
+      const requesterEmail =
+        typeof rawEmail === "string" ? rawEmail.trim() : "";
+      formData.append("_subject", `Request: ${requesterName || "Unknown"}`);
+      if (requesterEmail) {
+        formData.append("_replyto", requesterEmail);
+      }
       formData.append("_template", "table");
 
       try {
