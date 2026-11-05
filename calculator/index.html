@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Quote Calculator | Zimmerman's Dry Goods</title>
+    <link rel="icon" href="../zimms_circle.png" type="image/png" sizes="any">
+    <link rel="preload" href="../AlteHaasGroteskRegular.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="../AlteHaasGroteskBold.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 60px 1.2fr 1fr 0.7fr;
+            grid-template-rows: 60px 1fr 60px;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .calc-grid > .cell {
+            border-right: 3px solid var(--text);
+            border-bottom: 3px solid var(--text);
+        }
+
+        .calc-grid > .cell.last-col {
+            border-right: none;
+        }
+
+        .calc-grid > .cell.last-row {
+            border-bottom: none;
+        }
+
+        .brand-link {
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .title-cell {
+            padding: 0;
+        }
+
+        .title-cell .tab-button {
+            cursor: default;
+            background-color: var(--tab-active-bg);
+        }
+
+        .lock-button {
+            font-size: 1.2rem;
+        }
+
+        .cell-inputs,
+        .cell-results,
+        .cell-lock {
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+            padding: 2rem;
+            gap: 1.25rem;
+        }
+
+        .cell-lock {
+            grid-column: 2 / span 2;
+            justify-content: flex-end;
+        }
+
+        body.locked .cell-inputs,
+        body.locked .cell-results,
+        body.locked .lock-button {
+            display: none;
+        }
+
+        body:not(.locked) .cell-lock {
+            display: none;
+        }
+
+        .lock-heading {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 600;
+            line-height: 0.9;
+        }
+
+        .lock-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-width: 26rem;
+        }
+
+        .lock-error {
+            font-weight: 700;
+            min-height: 1.2em;
+        }
+
+        .section-label {
+            font-size: 1.55rem;
+            font-weight: 700;
+        }
+
+        .contact-form-field input:disabled {
+            opacity: 0.4;
+        }
+
+        .toggle-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.65rem 1rem;
+            border: 2px solid var(--border-subtle);
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .toggle:hover {
+            background-color: var(--tab-hover-bg);
+        }
+
+        .toggle input {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--text);
+            cursor: pointer;
+        }
+
+        .toggle:has(input:checked) {
+            border-color: var(--text);
+            background-color: var(--tab-active-bg);
+        }
+
+        .screen-fee-field {
+            max-width: 10rem;
+        }
+
+        .line {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 1rem;
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .line[hidden] {
+            display: none;
+        }
+
+        .total-line {
+            font-size: 1.55rem;
+            font-weight: 700;
+            border-top: 3px solid var(--text);
+            padding-top: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .margin-block {
+            margin-top: auto;
+            border-top: 3px solid var(--text);
+            padding-top: 1rem;
+        }
+
+        .margin-pct {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 600;
+            line-height: 0.95;
+        }
+
+        .margin-pct.negative {
+            text-decoration: line-through;
+        }
+
+        .note {
+            font-size: 0.8rem;
+            font-weight: 300;
+            line-height: 1.4;
+            opacity: 0.75;
+            margin-top: 0.75rem;
+        }
+
+        .cell-logo {
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .cell-logo .hours-logo-mark {
+            width: 75%;
+            margin-top: 12.5%;
+        }
+
+        .footer-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .footer-text a {
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+            .calc-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: none;
+                border-top: 3px solid var(--text);
+            }
+
+            .calc-grid > .cell {
+                border-right: none;
+            }
+
+            .calc-grid > .cell.last-row {
+                border-bottom: 3px solid var(--text);
+            }
+
+            .spacer-cell,
+            .footer-extra {
+                display: none;
+            }
+
+            .cell-lock {
+                grid-column: auto;
+            }
+
+            .cell-logo {
+                order: -1;
+                padding: 1.5rem;
+            }
+
+            .cell-logo .hours-logo-mark {
+                width: 140px;
+                margin: 0;
+            }
+
+            .cell-inputs,
+            .cell-results,
+            .cell-lock {
+                padding: 1.5rem 1rem;
+            }
+
+            .contact-form-row {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="locked">
+    <div class="calc-grid">
+        <!-- Row 1 -->
+        <div class="cell spacer-cell"></div>
+        <div class="cell tab-cell">
+            <a class="tab-button brand-button brand-link" href="/">Zimmerman's Dry Goods</a>
+        </div>
+        <div class="cell title-cell">
+            <span class="tab-button">Quote Calculator</span>
+        </div>
+        <div class="cell tab-cell last-col">
+            <button type="button" class="tab-button lock-button" id="lock-button">Lock</button>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="cell spacer-cell"></div>
+
+        <div class="cell cell-lock">
+            <div class="lock-heading">STAFF<br>ONLY</div>
+            <form class="lock-form" id="lock-form">
+                <div class="contact-form-field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" autocomplete="current-password" autofocus>
+                </div>
+                <button type="submit" class="contact-form-submit">Enter</button>
+                <p class="lock-error" id="lock-error" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <div class="cell cell-inputs" id="calc-inputs">
+            <div class="section-label">Order</div>
+            <div class="contact-form-row">
+                <div class="contact-form-field">
+                    <label for="qty"># of garments</label>
+                    <input type="number" id="qty" min="0" step="1" inputmode="numeric" placeholder="0">
+                </div>
+                <div class="contact-form-field">
+                    <label for="garment-cost">Price per garment ($)</label>
+                    <input type="number" id="garment-cost" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+                </div>
+            </div>
+            <div class="contact-form-row">
+                <div class="contact-form-field">
+                    <label for="colors"># of colors</label>
+                    <input type="number" id="colors" min="0" step="1" inputmode="numeric" placeholder="0">
+                </div>
+                <div class="contact-form-field screen-fee-field">
+                    <label for="screen-fee">Screen fee / color ($)</label>
+                    <input type="number" id="screen-fee" min="0" step="0.01" value="20">
+                </div>
+            </div>
+            <div class="toggle-row">
+                <label class="toggle"><input type="checkbox" id="screen-on" checked> Screen fee</label>
+                <label class="toggle"><input type="checkbox" id="rush"> Rush +10%</label>
+                <label class="toggle"><input type="checkbox" id="cc"> Credit card +3%</label>
+            </div>
+        </div>
+
+        <div class="cell cell-results" id="calc-results">
+            <div class="section-label">Quote</div>
+            <div>
+                <div class="line"><span>Garment price, rounded up</span><span id="out-rounded">$0.00</span></div>
+                <div class="line"><span>Garments (2 × rounded price × qty)</span><span id="out-garments">$0.00</span></div>
+                <div class="line"><span>Screens (colors × fee)</span><span id="out-screens">$0.00</span></div>
+                <div class="line" id="line-rush" hidden><span>Rush 10%</span><span id="out-rush">$0.00</span></div>
+                <div class="line" id="line-cc" hidden><span>Credit card 3%</span><span id="out-cc">$0.00</span></div>
+                <div class="line total-line"><span>Total</span><span id="out-total">$0.00</span></div>
+                <div class="line"><span>Per garment</span><span id="out-each">—</span></div>
+            </div>
+            <div class="margin-block">
+                <div class="line"><span>Margin</span></div>
+                <div class="margin-pct" id="out-margin">—</div>
+                <div class="line"><span>Profit</span><span id="out-profit">$0.00</span></div>
+                <div class="line"><span>Garment cost</span><span id="out-cost">$0.00</span></div>
+                <p class="note">Margin = (total before card fee − garment cost) ÷ total before card fee.
+                    The card fee goes to the processor, so it isn't counted as profit.
+                    Ink, labor, and screen materials aren't included in cost.</p>
+            </div>
+        </div>
+
+        <div class="cell cell-logo last-col">
+            <img class="hours-logo-mark" data-logo-base="../" src="../Zimmerman%20Logo%20W.svg" width="285"
+                height="277" alt="Zimmerman's Dry Goods logo" decoding="async">
+        </div>
+
+        <!-- Row 3 -->
+        <div class="cell spacer-cell last-row"></div>
+        <div class="cell last-row footer-extra">
+            <div class="footer-text">1656 Grand Ave, St Paul, MN 55105</div>
+        </div>
+        <div class="cell last-row footer-extra">
+            <div class="footer-text"><a href="mailto:zimmdrygoods@gmail.com">zimmdrygoods@gmail.com</a></div>
+        </div>
+        <div class="cell last-row last-col">
+            <div class="footer-text"><a href="tel:+16516994273">(651) 699-4273</a></div>
+        </div>
+    </div>
+
+    <script src="../theme.js"></script>
+    <script>
+        (function () {
+            var PASSWORD_HASH = "0e415e29102a06c4a9c13940acccfffd98cabb93f1dd06961ab5875d77b978c8";
+            var STORAGE_KEY = "zimms-calc-unlocked";
+            var RUSH_RATE = 0.10;
+            var CC_RATE = 0.03;
+
+            var $ = function (id) { return document.getElementById(id); };
+
+            applyRandomTheme();
+            applyRandomFabric();
+
+            async function sha256(text) {
+                var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+                return Array.from(new Uint8Array(buf)).map(function (b) {
+                    return b.toString(16).padStart(2, "0");
+                }).join("");
+            }
+
+            function unlock() {
+                document.body.classList.remove("locked");
+                $("qty").focus();
+                update();
+            }
+
+            $("lock-form").addEventListener("submit", async function (e) {
+                e.preventDefault();
+                var hash = await sha256($("password").value.trim().toLowerCase());
+                if (hash === PASSWORD_HASH) {
+                    sessionStorage.setItem(STORAGE_KEY, "1");
+                    $("lock-error").textContent = "";
+                    applyRandomTheme();
+                    unlock();
+                } else {
+                    $("lock-error").textContent = "Incorrect password.";
+                    $("password").select();
+                }
+            });
+
+            $("lock-button").addEventListener("click", function () {
+                sessionStorage.removeItem(STORAGE_KEY);
+                $("password").value = "";
+                document.body.classList.add("locked");
+                $("password").focus();
+            });
+
+            var money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+            function num(id) {
+                var v = parseFloat($(id).value);
+                return isFinite(v) && v > 0 ? v : 0;
+            }
+
+            function update() {
+                var qty = num("qty");
+                var garmentCost = num("garment-cost");
+                var colors = num("colors");
+                var screenOn = $("screen-on").checked;
+                var screenFee = screenOn ? num("screen-fee") : 0;
+                var rush = $("rush").checked;
+                var cc = $("cc").checked;
+
+                $("screen-fee").disabled = !screenOn;
+
+                var billedGarmentCost = Math.ceil(Math.round(garmentCost * 100) / 100);
+                var garments = 2 * billedGarmentCost * qty;
+                var screens = colors * screenFee;
+                var base = garments + screens;
+                var rushAmt = rush ? base * RUSH_RATE : 0;
+                var subtotal = base + rushAmt;
+                var ccAmt = cc ? subtotal * CC_RATE : 0;
+                var total = subtotal + ccAmt;
+
+                var cost = garmentCost * qty;
+                var profit = subtotal - cost;
+                var margin = subtotal > 0 ? (profit / subtotal) * 100 : null;
+
+                $("out-rounded").textContent = money.format(billedGarmentCost);
+                $("out-garments").textContent = money.format(garments);
+                $("out-screens").textContent = money.format(screens);
+                $("line-rush").hidden = !rush;
+                $("out-rush").textContent = money.format(rushAmt);
+                $("line-cc").hidden = !cc;
+                $("out-cc").textContent = money.format(ccAmt);
+                $("out-total").textContent = money.format(total);
+                $("out-each").textContent = qty > 0 ? money.format(total / qty) : "—";
+
+                $("out-cost").textContent = money.format(cost);
+                $("out-profit").textContent = money.format(profit);
+                var marginEl = $("out-margin");
+                marginEl.textContent = margin === null ? "—" : margin.toFixed(1) + "%";
+                marginEl.classList.toggle("negative", margin !== null && margin < 0);
+            }
+
+            $("calc-inputs").addEventListener("input", update);
+            $("calc-inputs").addEventListener("change", update);
+
+            if (sessionStorage.getItem(STORAGE_KEY) === "1") unlock();
+        })();
+    </script>
+</body>
+
+</html>
